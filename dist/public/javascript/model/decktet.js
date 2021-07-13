@@ -1,3 +1,4 @@
+//different from typescript how?
 const RAW_CARD_OBJECTS = [
     {
         name: 'Ace of Knots',
@@ -405,6 +406,11 @@ const RAW_CARD_OBJECTS = [
         suit3: 'Knots'
     }
 ];
+
+//Card is a class, taking (argObj) into the constructor. I guess the argObj =
+//type RawCardObj
+//sets the this (state) of it to the values within the card.  
+//getName etc, these are basically function calls?
 export class Card {
     constructor(argObj) {
         this.name = argObj.name;
@@ -436,6 +442,9 @@ export class Card {
         return this.suits.includes(suit);
     }
 }
+
+//looks like  this does the looping through all the RAW_CARD_OBJECTS (see line 1)
+//and pushes them one at a time through to Decktet.cards
 export class Decktet {
     constructor(deckType) {
         this.cards = [];
@@ -455,6 +464,7 @@ export class Decktet {
                 this.cards.push(card);
             }
         }
+        //and then shuffles it!
         this.shuffle();
     }
     drawCard() {
@@ -463,11 +473,17 @@ export class Decktet {
     getRemainingCards() {
         return this.cards.length;
     }
+    //shuffle => process... how good is this random?!
     shuffle() {
+        //process through the cards array moving backwards (down through the deck) 
         for (let idx = this.getRemainingCards() - 1; idx > 0; idx--) {
+            //creates a new deck location based on the number of cards in the deck
             const newIndex = Math.floor(Math.random() * (idx + 1));
+            //find the card that is currently in the newly chosen position
             const oldValue = this.cards[newIndex];
+            //refresh that new positions card with whatever card is currently being processed in the for loop
             this.cards[newIndex] = this.cards[idx];
+            //swap the displaced card into position idx (the one we are "processing")
             this.cards[idx] = oldValue;
         }
     }

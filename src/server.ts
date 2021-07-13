@@ -48,6 +48,7 @@ type roomDataObject = {
   p2Connected: boolean;
   p2ready: boolean;
   cardDeck: Decktet | undefined;
+  msg: string;
 };
 
 const roomsGameData = [] as roomDataObject[];
@@ -84,6 +85,7 @@ io.on('connection', (socket) => {
   socket.join(`room-${currRoomNo}`);
   room = io.sockets.adapter.rooms.get(`room-${currRoomNo}`);
 
+  //whats the purpose of this?  if we are setting the playerID when socket.on() 
   let playerID: 'Player 1' | 'Player 2';
 
   const deck = new Decktet('basicDeck');
@@ -101,7 +103,9 @@ io.on('connection', (socket) => {
         p1ready: false,
         p2Connected: false,
         p2ready: false,
-        cardDeck: deck
+        cardDeck: deck,
+        //added this in to enable chat?
+        msg: ``
       };
     } else {
       playerID = 'Player 2';
@@ -185,6 +189,8 @@ io.on('connection', (socket) => {
     const nextPlayer = playerID === 'Player 1' ? 'Player 2' : 'Player 1';
     socket.to(`room-${currRoomNo}`).emit('beginNextTurn', nextPlayer);
   });
+
+  //socket msg sending (mvp on button press send the "playerID" as a msg)
 
   socket.on('disconnect', () => {
     console.log(`${playerID} disconnected`);

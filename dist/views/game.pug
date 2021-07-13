@@ -39,13 +39,14 @@ script.
         br
         | turn
 #overlay
+//- this is the ingame popup modal menu (similar but independent from the home.pug menu )
 #menu-popup.menu-popup.modal
   button#closeMenuButton.close(href='#') &times;
-  .menu-header Jacynth
+  .menu-header Jacynths
       br
-      span.subheader A Decktet Game
+      span.subheader A Decktet Games
   #singlePlayerBttn.menu-button
-    a(href='/singleplayer') New Singleplayer Game
+    a(href='/singleplayer') New Singleplayer Games
   #multiPlayerBttn.menu-button
     a(href='/multiplayer') New Multiplayer Game
   #rulesButton.menu-button

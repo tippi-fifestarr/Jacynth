@@ -1,7 +1,10 @@
+//somehow+why exporting "types" for the different suits, decktype, and Rank?
 export type Suit = 'Knots' | 'Leaves' | 'Moons' | 'Suns' | 'Waves' | 'Wyrms';
 export type DeckType = 'basicDeck' | 'extendedDeck';
 type Rank = 'Ace' | 'Numeral' | 'Crown' | 'Pawn' | 'Court';
 
+//this is similar (or identical) to a struct in Solidity
+//how is it used?
 type RawCardObj = {
   name: string;
   id: string;
@@ -420,6 +423,7 @@ const RAW_CARD_OBJECTS = [
   }
 ] as RawCardObj[];
 
+//type /class Card, constructed on top of the RawCardObj
 export class Card {
   private name: string;
   private id: string;
@@ -464,6 +468,7 @@ export class Card {
 }
 
 export class Decktet {
+  //type for the this.cards is an array of Card types 
   private cards: Card[];
   private referenceDeck: Map<string, Card>;
 

@@ -1,3 +1,4 @@
+//socket.io used for multiplayer player (see line 128)
 import { Socket } from 'socket.io-client';
 
 import { Suit, Card, Decktet } from './decktet.js';
@@ -27,24 +28,29 @@ export type SendCardDrawtoViewCB = (card: Card) => void;
 export type SendCardPlaytoViewCB = (card: Card, boardSpace: BoardSpace) => void;
 export type SendTokenPlayToViewCB = (boardSpace: BoardSpace) => void;
 
+//this is easily upgraded to dynamically provided strings/default values
 export type PlayerID = 'Player 1' | 'Player 2' | 'Computer';
-
+//^^global stuff^^
 export class Player {
   public playerID: PlayerID;
   protected hand: Card[];
   protected deck: Decktet;
   protected gameBoard: GameBoard;
+  //# of influence tokens
   protected influenceTokens: number;
   protected sendCardPlaytoView: SendCardPlaytoViewCB | undefined;
   protected sendCardDrawtoView: SendCardDrawtoViewCB | undefined;
   protected sendTokenPlayToView: SendTokenPlayToViewCB | undefined;
 
+  // a player is made up of these things ('player ID', gameBoard state, and deck situation, a hand [array of cards], and a number of influence tokens)
   constructor(playerID: PlayerID, gameBoard: GameBoard, deck: Decktet) {
     this.playerID = playerID;
     this.gameBoard = gameBoard;
     this.deck = deck;
     this.hand = [];
     this.influenceTokens = PLAYER_INFLUENCE_TOKENS;
+    //is this where we add the chat function? 
+    //this.message = msg;
   }
 
   playCard = (spaceID: string, cardID: string) => {
@@ -119,7 +125,9 @@ export class Player {
   }
 }
 
+//there is a whole class called player multiplayer! that extends the Player class above!  celebrate and dance so free!
 export class Player_MultiPlayer extends Player {
+  //wats this? 
   socket: Socket;
   constructor(
     playerID: PlayerID,
@@ -130,6 +138,7 @@ export class Player_MultiPlayer extends Player {
     super(playerID, gameBoard, deck);
     this.socket = socket;
 
+    //socket.on is defined in the imported socket.io-client
     socket.on(
       'recieveCardDraw',
       (cardID: string | undefined, playerID: string) => {
@@ -161,6 +170,14 @@ export class Player_MultiPlayer extends Player {
       }
     );
   }
+  /*socket.on(
+    'updatedMSG',
+    (message : string) => {
+      const message = this.msg;
+      
+    }
+  )
+  */
 
   drawCard = () => {
     this.socket.emit('drawCard', this.playerID);

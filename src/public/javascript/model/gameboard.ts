@@ -1,19 +1,26 @@
+//typescript has imports vs javascript?
+//clues to what data are we working with here
 import { Suit, Card, Decktet } from './decktet.js';
 import { PlayerID } from './player.js';
 
+//this has private demarkation and key/value pairs before constructor
+//the name BoardSpace indicates this a fillable "square"
 export class BoardSpace {
   private id: string;
+  //this is the Card "struct" found in decktet.ts:426 
   private card: Card | undefined;
   private playerToken: PlayerID | undefined;
   private controllingSpaceBySuit: Map<Suit, string>;
 
+  //it looks like id: string is a clue to the format
+  //probably the "type" in typescript.  
   constructor(id: string) {
     this.id = id;
     this.card = undefined;
     this.playerToken = undefined;
     this.controllingSpaceBySuit = new Map();
   }
-
+  //the BoardSpace has an ID and starts empty ("undefined") by default.
   setCard(card: Card): boolean {
     if (this.getCard()) throw new Error('space already has card');
     this.card = card;
@@ -113,10 +120,13 @@ export class GameBoard {
     return this.remainingSpaces;
   }
 
+  //when setting down the car, check the space is empty and if the space.setCard can set the card?
   setCard(spaceID: string, card: Card): boolean {
     const space = this.getSpace(spaceID);
     if (!space) return false;
+    //not sure what this is?
     if (!space.setCard(card)) return false;
+    //update remainingSpaces and resolve the influence calculation
     this.remainingSpaces--;
     this.resolveInflunceForEntireBoard();
     return true;
@@ -177,6 +187,8 @@ export class GameBoard {
     return false;
   }
 
+  //looks like it only checks isPlayableSpace when this happens
+  //can't see when this gets called in this doc (so it must be externally facing)
   getAvailableSpaces = (): BoardSpace[] => {
     const results = [] as BoardSpace[];
     this.spaces.forEach((space) => {
@@ -185,13 +197,20 @@ export class GameBoard {
         results.push(space);
       }
     });
+    //return results
     return results;
   };
 
+  //results = [] as BoardSpace. any explain in the docs?
+  //start with a single spaceID and a suit to check the districtness?
   getDistrict(spaceID: string, suit: Suit): BoardSpace[] {
+    //a district is an Array of BoardSpace(s)
+    //results is the answer to the question/method
     const results = [] as BoardSpace[];
     const currentSpace = this.getSpace(spaceID);
+    //empty something i dunno
     if (!currentSpace) return results;
+    //run getCard on the currentSpace
     const currentCard = currentSpace.getCard();
     if (!currentCard || !currentCard.hasSuit(suit)) return results;
 
@@ -214,6 +233,7 @@ export class GameBoard {
     return results;
   }
 
+  //key function concept
   resolveInfluence = (boardSpace: BoardSpace) => {
     const card = boardSpace.getCard();
     if (!card) throw new Error('no card on space');
